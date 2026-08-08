@@ -35,6 +35,7 @@ from ShashankMusic.utils.database import (
     remove_active_video_chat,
     set_loop,
 )
+from ShashankMusic.utils.autoplay import is_autoplay_on, try_autoplay
 from ShashankMusic.utils.exceptions import AssistantErr
 from ShashankMusic.utils.formatters import check_duration, seconds_to_min, speed_converter
 from ShashankMusic.utils.inline.play import stream_markup
@@ -317,6 +318,13 @@ class Call(PyTgCalls):
                 await set_loop(chat_id, loop)
             await auto_clean(popped)
             if not check:
+                if await is_autoplay_on(chat_id):
+                    try:
+                        played = await try_autoplay(self, client, chat_id, popped)
+                    except Exception:
+                        played = False
+                    if played:
+                        return
                 await _clear_(chat_id)
                 return await client.leave_call(chat_id, close=False)
         except Exception:

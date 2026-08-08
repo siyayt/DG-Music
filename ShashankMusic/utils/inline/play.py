@@ -18,6 +18,7 @@ from pyrogram import enums
 from pyrogram.enums import ButtonStyle
 from pyrogram.types import InlineKeyboardButton
 from ShashankMusic.utils.formatters import time_to_seconds
+from ShashankMusic.utils.autoplay import AUTOPLAY, AUTOPLAY_CB
 from ShashankMusic import app
 
 STYLES = [
@@ -25,6 +26,17 @@ STYLES = [
     enums.ButtonStyle.SUCCESS,
     enums.ButtonStyle.DANGER
 ]
+
+
+def autoplay_button(chat_id):
+    style = random.choice(STYLES)
+    on = AUTOPLAY.get(chat_id, False)
+    text = "🔄 AUTOPLAY: ✅" if on else "🔄 TAP TO ON AUTOPLAY: ❌"
+    return [
+        InlineKeyboardButton(
+            text=text, callback_data=f"{AUTOPLAY_CB}|{chat_id}", style=style
+        )
+    ]
 
 def track_markup(_, videoid, user_id, channel, fplay):
     alone_style = random.choice(STYLES)
@@ -108,6 +120,7 @@ def stream_markup_timer(_, chat_id, played, dur):
             InlineKeyboardButton(text="ɪɴғᴏ", callback_data=f"api_status", style=group_style),
             InlineKeyboardButton(text="𝟤𝟢ˢ+", callback_data=f"ADMIN SEEK|{chat_id}", style=group_style),
         ],
+        autoplay_button(chat_id),
         [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close", style=alone_style)],
     ]
     return buttons
@@ -130,6 +143,7 @@ def stream_markup(_, chat_id):
             InlineKeyboardButton(text="ɪɴғᴏ", callback_data=f"api_status", style=group_style),
             InlineKeyboardButton(text="𝟤𝟢ˢ+", callback_data=f"ADMIN SEEK|{chat_id}", style=group_style),
         ],
+        autoplay_button(chat_id),
         [InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close", style=alone_style)],
     ]
     return buttons
