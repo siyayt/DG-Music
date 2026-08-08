@@ -61,13 +61,25 @@ def private_panel(_):
         ],
         [
             InlineKeyboardButton(
-                text=_["S_B_5"], 
-                user_id=config.OWNER_ID,
+                text=_["S_B_5"],
+                url="https://t.me/mr_Tom_Here",
                 style=group_style
             ),
             InlineKeyboardButton(
+                text="ᴅᴇᴠᴇʟᴏᴘᴇʀ",
+                url="https://t.me/dgravanbhai",
+                style=group_style
+            ),
+        ],
+        [
+            InlineKeyboardButton(
                 text="ɪɴғᴏ 皿",
                 callback_data="api_status",
+                style=group_style
+            ),
+            InlineKeyboardButton(
+                text="ᴀᴄᴛɪᴠɪᴛʏ ᴀʀᴇᴀ",
+                url="https://t.me/musiclogsz",
                 style=group_style
             ),
         ],
