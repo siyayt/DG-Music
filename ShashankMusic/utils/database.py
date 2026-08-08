@@ -101,23 +101,27 @@ async def get_assistant(chat_id: int) -> str:
         dbassistant = await assdb.find_one({"chat_id": chat_id})
         if not dbassistant:
             userbot = await set_assistant(chat_id)
-            return userbot
         else:
             got_assis = dbassistant["assistant"]
             if got_assis in assistants:
                 assistantdict[chat_id] = got_assis
                 userbot = await get_client(got_assis)
-                return userbot
             else:
                 userbot = await set_assistant(chat_id)
-                return userbot
     else:
         if assistant in assistants:
             userbot = await get_client(assistant)
-            return userbot
         else:
             userbot = await set_assistant(chat_id)
-            return userbot
+
+    if not userbot or not getattr(userbot, "me", None):
+        # Whatever assistant slot we resolved to isn't actually a live,
+        # started client (e.g. a stale DB assignment pointing at an
+        # assistant number that's no longer configured). Fall back to a
+        # fresh, currently-valid assignment instead of returning a dead
+        # client.
+        userbot = await set_assistant(chat_id)
+    return userbot
 
 
 async def set_calls_assistant(chat_id):
