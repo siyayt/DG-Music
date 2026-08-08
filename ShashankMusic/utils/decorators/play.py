@@ -21,7 +21,7 @@ from pyrogram.errors import (
     UserNotParticipant,
 )
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from ShashankMusic import YouTube, app
+from ShashankMusic import LOGGER, YouTube, app
 from ShashankMusic.misc import SUDOERS
 from ShashankMusic.utils.database import (
     get_assistant,
@@ -128,12 +128,21 @@ def PlayWrapper(command):
         if not await is_active_chat(chat_id):
             userbot = await get_assistant(chat_id)
             if not userbot or not getattr(userbot, "me", None):
+                from ShashankMusic.core.userbot import assistants as _assistants
+                LOGGER(__name__).info(
+                    f"[AUTOPLAY-DEBUG] chat_id={chat_id} assistants_list={_assistants} "
+                    f"userbot={userbot!r} has_me={getattr(userbot, 'me', 'NO-ATTR')!r}"
+                )
                 # Assistant client isn't actually live (e.g. right after a
                 # fresh deploy/restart, or a bad cached assignment). Try
                 # once more, then fail gracefully instead of crashing.
                 from ShashankMusic.utils.database import set_assistant
 
                 userbot = await set_assistant(chat_id)
+                LOGGER(__name__).info(
+                    f"[AUTOPLAY-DEBUG] after retry userbot={userbot!r} "
+                    f"has_me={getattr(userbot, 'me', 'NO-ATTR')!r}"
+                )
             if not userbot or not getattr(userbot, "me", None):
                 return await message.reply_text(
                     "⚠️ The assistant account isn't ready yet. Please try again in a few seconds."
