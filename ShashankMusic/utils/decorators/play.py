@@ -11,7 +11,6 @@
 #
 # ❤️ Made with dedication and love by ItzShukla
 # -----------------------------------------------
-
 import asyncio
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import (
@@ -35,10 +34,7 @@ from ShashankMusic.utils.database import (
 from ShashankMusic.utils.inline import botplaylist_markup
 from config import PLAYLIST_IMG_URL, SUPPORT_CHAT, adminlist
 from strings import get_string
-
 links = {}
-
-
 def PlayWrapper(command):
     async def wrapper(client, message):
         language = await get_lang(message.chat.id)
@@ -55,7 +51,6 @@ def PlayWrapper(command):
                 ]
             )
             return await message.reply_text(_["general_3"], reply_markup=upl)
-
         if await is_maintenance() is False:
             if message.from_user.id not in SUDOERS:
                 return await message.reply_text(
@@ -124,29 +119,26 @@ def PlayWrapper(command):
             fplay = True
         else:
             fplay = None
-
         if not await is_active_chat(chat_id):
             userbot = await get_assistant(chat_id)
-            if not userbot or not getattr(userbot, "me", None):
-                from ShashankMusic.core.userbot import assistants as _assistants
-                LOGGER(__name__).info(
-                    f"[AUTOPLAY-DEBUG] chat_id={chat_id} assistants_list={_assistants} "
-                    f"userbot={userbot!r} has_me={getattr(userbot, 'me', 'NO-ATTR')!r}"
-                )
-                # Assistant client isn't actually live (e.g. right after a
-                # fresh deploy/restart, or a bad cached assignment). Try
-                # once more, then fail gracefully instead of crashing.
-                from ShashankMusic.utils.database import set_assistant
-
-                userbot = await set_assistant(chat_id)
-                LOGGER(__name__).info(
-                    f"[AUTOPLAY-DEBUG] after retry userbot={userbot!r} "
-                    f"has_me={getattr(userbot, 'me', 'NO-ATTR')!r}"
-                )
-            if not userbot or not getattr(userbot, "me", None):
+            if not userbot:
                 return await message.reply_text(
                     "⚠️ The assistant account isn't ready yet. Please try again in a few seconds."
                 )
+            if not getattr(userbot, "me", None):
+                # .me can be briefly unset right after a restart even
+                # though the client is actually connected. Fetch it
+                # directly instead of failing immediately.
+                for _retry in range(5):
+                    try:
+                        userbot.me = await userbot.get_me()
+                        break
+                    except Exception:
+                        await asyncio.sleep(2)
+                if not getattr(userbot, "me", None):
+                    return await message.reply_text(
+                        "⚠️ The assistant account isn't ready yet. Please try again in a few seconds."
+                    )
             try:
                 try:
                     get = await app.get_chat_member(chat_id, userbot.me.id)
