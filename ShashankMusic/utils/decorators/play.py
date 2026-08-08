@@ -127,6 +127,17 @@ def PlayWrapper(command):
 
         if not await is_active_chat(chat_id):
             userbot = await get_assistant(chat_id)
+            if not userbot or not getattr(userbot, "me", None):
+                # Assistant client isn't actually live (e.g. right after a
+                # fresh deploy/restart, or a bad cached assignment). Try
+                # once more, then fail gracefully instead of crashing.
+                from ShashankMusic.utils.database import set_assistant
+
+                userbot = await set_assistant(chat_id)
+            if not userbot or not getattr(userbot, "me", None):
+                return await message.reply_text(
+                    "⚠️ The assistant account isn't ready yet. Please try again in a few seconds."
+                )
             try:
                 try:
                     get = await app.get_chat_member(chat_id, userbot.me.id)
@@ -138,7 +149,7 @@ def PlayWrapper(command):
                 ):
                     return await message.reply_text(
                         _["call_2"].format(
-                            app.mention, userbot.id, userbot.name, userbot.username
+                            app.mention, userbot.me.id, userbot.me.first_name, userbot.me.username
                         )
                     )
             except UserNotParticipant:
@@ -171,7 +182,7 @@ def PlayWrapper(command):
                     await userbot.join_chat(invitelink)
                 except InviteRequestSent:
                     try:
-                        await app.approve_chat_join_request(chat_id, userbot.id)
+                        await app.approve_chat_join_request(chat_id, userbot.me.id)
                     except Exception as e:
                         return await message.reply_text(
                             _["call_3"].format(app.mention, type(e).__name__)
