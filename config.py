@@ -52,13 +52,13 @@ HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 # ✅ Git & Upstream Repo
-UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/itzshukla/ChhaviMusic")
+UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/siyayt/DG-Music")
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN", "")  # Only for private repo
 
 # ✅ Support Links
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/CharviBots")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/CharviChats")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/+HY0IpyfN4MU0NmE1")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/Hindi_Shayari_Lovers")
 
 # ✅ Auto Features
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
@@ -94,8 +94,8 @@ userstats = {}
 clean = []
 
 # ✅ UI Images
-START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/7tg6zk.jpg")
-PING_IMG_URL = getenv("PING_IMG_URL", "https://files.catbox.moe/7tg6zk.jpg")
+START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/7jds0u.jpg")
+PING_IMG_URL = getenv("PING_IMG_URL", "https://graph.org/file/a3cc654217d68297d8538-f0ae69bbb7a360f6ae.jpg")
 PLAYLIST_IMG_URL = "https://files.catbox.moe/xp3phx.jpg"
 STATS_IMG_URL = "https://files.catbox.moe/7tg6zk.jpg"
 TELEGRAM_AUDIO_URL = "https://files.catbox.moe/xp3phx.jpg"
